@@ -12,7 +12,7 @@ const Header = () => {
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
 
-  console.log(user)
+  console.log(user);
   const dispatch = useDispatch();
 
   const handleLoginSubmit = (event) => {
@@ -35,12 +35,13 @@ const Header = () => {
     <header className="bg-red-600 text-white p-4">
       <nav className="container mx-auto flex justify-between items-center">
         <Link to="/" className="font-bold">Zomato Clone</Link>
-        <div>
+        <div className="flex items-center mr-9">
+          <a href="http://localhost:3001" className="px-4 py-2 mr-4 text-white">
+            Business
+          </a>
           {user != null ? (
-            <div className="flex items-center">
-              {user.name && <ProfileIcon name={user.name} />}
-              <span className="ml-2">{user.username}</span>
-              <button onClick={handleLogout} className="ml-4 px-4 py-2">Logout</button>
+            <div className="flex items-center relative">
+              <ProfileIcon user={user} onLogout={handleLogout} />
             </div>
           ) : (
             <>
@@ -63,7 +64,7 @@ const Header = () => {
           <div
             className="w-1/2 p-8 text-white flex flex-col justify-center items-center"
             style={{
-              backgroundImage: "url('https://www.wallpapertip.com/wmimgs/50-504393_background-food-images-hd.jpg')",
+              backgroundImage: "url('https://i.pinimg.com/564x/d3/6d/46/d36d462db827833805497d9ea78a1343.jpg')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -89,7 +90,7 @@ const Header = () => {
           <div
             className="w-1/2 p-8 text-white flex flex-col justify-center items-center"
             style={{
-              backgroundImage: "url('https://www.wallpapertip.com/wmimgs/50-504393_background-food-images-hd.jpg')",
+              backgroundImage: "url('https://i.pinimg.com/564x/d3/6d/46/d36d462db827833805497d9ea78a1343.jpg')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}

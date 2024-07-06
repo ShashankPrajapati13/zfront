@@ -26,7 +26,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    logoutUser: (state) => {
+    clearUser: (state) => {
       state.user = null;
       state.token = null;
       Cookies.remove('token'); 
@@ -34,7 +34,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setLoading, setUser, setError} = userSlice.actions;
+export const { setLoading, setUser, setError,clearUser} = userSlice.actions;
 
 export const loginUser = (userData) => async (dispatch) => {
   dispatch(setLoading());
@@ -42,7 +42,7 @@ export const loginUser = (userData) => async (dispatch) => {
     const response = await axios.post('/user/login', userData);
     const {user,token} = response.data.data
     dispatch(setUser({ user, token }));
-    Cookies.set('token', token, { expires: 1 }); 
+    Cookies.set('userToken', token, { expires: 1 }); 
   } catch (error) {
     const message = error.response?.data?.message || 'Login failed';
     dispatch(setError(message));
@@ -55,7 +55,7 @@ export const registerUser = (userData) => async (dispatch) => {
     const response = await axios.post('/user/register', userData);
     const {user,token} = response.data.data
     dispatch(setUser({ user, token }));
-    Cookies.set('token', token, { expires: 1 }); 
+    Cookies.set('userToken', token, { expires: 1 }); 
   } catch (error) {
     const message = error.response?.data?.message || 'Registration failed';
     dispatch(setError(message));
@@ -63,15 +63,15 @@ export const registerUser = (userData) => async (dispatch) => {
 };
 
 export const getUser = () => async (dispatch) => {
-  const token = Cookies.get('token');
+  const token = Cookies.get('userToken');
   if (token) {
     try {
-      const response = await axios.get('/api/user/me', {
+      const response = await axios.get('/user/getuser', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      const user = response.data;
+      const user = response.data.data;
       dispatch(setUser({ user, token }));
     } catch (error) {
       console.error('Error loading user from cookies:', error);
@@ -83,7 +83,8 @@ export const logoutUser = () => async (dispatch) => {
   dispatch(setLoading());
   try {
     await axios.post('/user/logout');
-    dispatch();
+    dispatch(clearUser());
+    Cookies.remove('userToken');
   } catch (error) {
     const message = error.response?.data?.message || 'Logout failed';
     dispatch(setError(message));
